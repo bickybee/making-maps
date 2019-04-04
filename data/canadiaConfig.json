@@ -1,0 +1,63 @@
+{
+    "categories": {
+        "admin_level": [
+            {
+                "values": [
+                    "4"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#BA3B46",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "5"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#61C9A8",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "6"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#ED9B40",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "7"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#A3988C",
+                        "width": 2
+                    }
+                }
+            }
+        ]
+    },
+    "highway": [
+        {
+            "values": [
+                "motorway"
+            ],
+            "style": {
+                "stroke": {
+                    "color": "#BA3B46",
+                    "width": 3
+                }
+            }
+        }
+    ]
+}

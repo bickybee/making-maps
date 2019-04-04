@@ -1,0 +1,51 @@
+{
+    "categories": {
+        "highway": [
+            {
+                "values": [
+                    "motorway"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#BA3B46",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "secondary"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#61C9A8",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "tertiary"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#ED9B40",
+                        "width": 3
+                    }
+                }
+            },
+            {
+                "values": [
+                    "residential",
+                    "living_street"
+                ],
+                "style": {
+                    "stroke": {
+                        "color": "#A3988C",
+                        "width": 2
+                    }
+                }
+            }
+        ]
+    }
+}
