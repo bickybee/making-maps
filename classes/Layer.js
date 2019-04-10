@@ -3,24 +3,39 @@ import VectorSource from 'ol/source/Vector';
 
 export default class Layer {
 
-    constructor(name, level, style) {
-        this.name = name;
+    constructor(category, level, style) {
+        this.category = category;
         this.level = level;
         this.stamps = [];
         this.olLayer = new VectorLayer({
-            name: this.name,
+            category: this.category,
+            level: this.level,
             source: new VectorSource(),
             style: style,
             declutter: true
         });
     }
 
-    get source() {
+    getOlLayer() {
+        return this.olLayer;
+    }
+
+    getSource() {
         return this.olLayer.getSource();
     }
 
     setHandler(action, fn) {
         this.olLayer.on(action, fn);
+    }
+
+    addFeature(feature) {
+        feature.set('category', this.category);
+        feature.set('level', this.level);
+        this.olLayer.getSource().addFeature(feature);
+    }
+
+    getFeatures() {
+        return this.olLayer.getSource().getFeatures();
     }
 
     addStamp(stamp) {

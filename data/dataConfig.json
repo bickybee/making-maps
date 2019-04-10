@@ -1,0 +1,12 @@
+{
+    "categories": [
+        {
+            "dataFileName": "toronto.json",
+            "configFileName": "torontoConfig.json"
+        },
+        {
+            "dataFileName": "sheffield.json",
+            "configFileName": "torontoConfig.json"
+        }
+    ]
+}

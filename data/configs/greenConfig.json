@@ -1,0 +1,32 @@
+{
+    "categories": [
+        {
+            "name": "green",
+            "properties": ["leisure", "landuse", "natural"],
+            "hierarchy": [
+                {
+                    "tags": {
+                        "leisure": "park"
+                    },
+                    "style": {
+                        "fill": {
+                            "color": "#ED9B40"
+                        }
+                    }
+                },
+                {
+                    "tags": {
+                        "landuse": "grass",
+                        "leisure": "pitch",
+                        "natural": "scrub"
+                    },
+                    "style": {
+                        "stroke": {
+                            "color": "green"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

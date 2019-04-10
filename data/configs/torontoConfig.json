@@ -1,0 +1,69 @@
+{   "name": "streets",
+    "hierarchy": {
+        "type": "manual",
+        "definition": {
+            "layers": [
+                {
+                    "properties": [
+                        {
+                            "key": "highway",
+                            "value": "motorway"
+                        }
+                    ],
+                    "style": {
+                        "stroke": {
+                            "color": "#BA3B46",
+                            "width": 3
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "highway",
+                            "value": "secondary"
+                        }
+                    ],
+                    "style": {
+                        "stroke": {
+                            "color": "#61C9A8",
+                            "width": 3
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "highway",
+                            "value": "tertiary"
+                        }
+                    ],
+                    "style": {
+                        "stroke": {
+                            "color": "#ED9B40",
+                            "width": 3
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "highway",
+                            "value": "residential"
+                        },
+                        {
+                            "key": "highway",
+                            "value": "living_street"
+                        }
+                    ],
+                    "style": {
+                        "stroke": {
+                            "color": "#A3988C",
+                            "width": 2
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

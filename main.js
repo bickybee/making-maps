@@ -9,12 +9,10 @@ import DragPan from 'ol/interaction/DragPan';
 import {shiftKeyOnly} from 'ol/events/condition';
 import Stamen from 'ol/source/Stamen.js';
 
-import geoData from './data/toronto.json';
-import config from './data/torontoConfig.json';
 import {extentFromOlLayers, createStamp, addOlLayers, removeOlLayers} from './helpers/olHelpers.js';
-import LayerManager from './models/LayerManager';
+import LayerManager from './classes/LayerManager';
 
-const layerManager = new LayerManager(config, geoData, 'highway');
+const layerManager = new LayerManager('./dataConfig.json');
 let brushSize = 100;
 let panning = false;
 const mousePos = {
@@ -76,7 +74,6 @@ const map = new Map({
 const levelLayers = layerManager.getOlLayers();
 map.getView().fit(extentFromOlLayers(levelLayers));
 
-
 // configure interactions
 
 map.addInteraction(new DragPan({
@@ -91,18 +88,20 @@ map.addInteraction(new DragPan({
 // add pre/postcompose methods to layers (these reference map so they must be done here)
 
 const precompose = (olEvent) => {
-    const layerName = olEvent.target.getProperties().name;
-    const layer = layerManager.getLayerByName(layerName);
-    const layerStamps = layer.stamps;
-    const layerLevel = layer.level;
+    const olLayer = olEvent.target;
+    const props = olLayer.getProperties(); 
+    const category = props.category;
+    const level = props.level;
+    const layer = layerManager.getLayer(category, level);
+    const stamps = layer.stamps;
 
-    if ((layerManager.currentLevel < layerLevel) && (layerStamps.length > 0)) {
+    if ((layerManager.getCurrentLevelForCategory(category) < level) && (stamps.length > 0)) {
         const ctx = olEvent.context;
 
         ctx.save();
         ctx.beginPath();
 
-        layerStamps.forEach(stamp => {
+        stamps.forEach(stamp => {
             const pixelCenter = map.getPixelFromCoordinate(stamp.center);
             const pixelPerimeter = map.getPixelFromCoordinate(stamp.perimeter);
             const radius = Math.abs(pixelPerimeter[0] - pixelCenter[0]);
@@ -185,12 +184,16 @@ document.addEventListener('keyup', (event) => {
         panning = false;
         break;
     case 'ArrowLeft':
-        const olLayersToRemove = layerManager.decrementLevel();
-        removeOlLayers(olLayersToRemove, map);
+        const olLayerToRemove = layerManager.decrementLevel();
+        if (olLayerToRemove) {
+            map.removeLayer(olLayerToRemove);
+        }
         break;
     case 'ArrowRight':
-        const olLayersToAdd = layerManager.incrementLevel();
-        addOlLayers(olLayersToAdd, map);
+        const olLayerToAdd = layerManager.incrementLevel();
+        if (olLayerToAdd) {
+            map.addLayer(olLayerToAdd);
+        }
         break;
     case 'ArrowUp':
         brushSize = brushSize + 25;
