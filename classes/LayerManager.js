@@ -7,7 +7,7 @@ export default class LayerManager {
         
         const parser = new LayerParser(pathToConfig);
         this.categories = parser.parse();
-        this.index = 0; // current category
+        this.index = this.categories.length - 1; // current category
 
     }
 
@@ -21,8 +21,10 @@ export default class LayerManager {
 
     getOlLayers() {
         const olLayers = []
+        console.log(this.categories);
         this.categories.forEach((category) => {
-            olLayers.push(...category.getOlLayers());
+            const categoryLayers = category.getOlLayers();
+            olLayers.push(...categoryLayers);
         })
         return olLayers;
     }

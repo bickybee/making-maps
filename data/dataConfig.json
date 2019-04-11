@@ -5,8 +5,8 @@
             "configFileName": "torontoConfig.json"
         },
         {
-            "dataFileName": "sheffield.json",
-            "configFileName": "torontoConfig.json"
+            "dataFileName": "green.json",
+            "configFileName": "greenConfigSize.json"
         }
     ]
 }

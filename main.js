@@ -184,12 +184,14 @@ document.addEventListener('keyup', (event) => {
         panning = false;
         break;
     case 'ArrowLeft':
+        console.log("remove");
         const olLayerToRemove = layerManager.decrementLevel();
         if (olLayerToRemove) {
             map.removeLayer(olLayerToRemove);
         }
         break;
     case 'ArrowRight':
+        console.log("add");
         const olLayerToAdd = layerManager.incrementLevel();
         if (olLayerToAdd) {
             map.addLayer(olLayerToAdd);

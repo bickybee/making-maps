@@ -1,0 +1,10 @@
+{
+    "name": "greenspace",
+    "hierarchy": {
+        "type": "area",
+        "definition": {
+            "divisions": 6,
+            "function": "cluster"
+        }
+    }
+}
