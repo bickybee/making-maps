@@ -46,7 +46,7 @@ const bgLayer = new VectorLayer({
 
 // add olLayers in correct order
 
-const olLayers = layerManager.getOlLayers();
+const olLayers = layerManager.getCurrentOlLayers();
 olLayers.push(stamenLabelLayer);
 olLayers.push(uiLayer);
 olLayers.unshift(bgLayer);
@@ -71,7 +71,7 @@ const map = new Map({
 
 // configure map
 
-const levelLayers = layerManager.getOlLayers();
+const levelLayers = layerManager.getCurrentOlLayers();
 map.getView().fit(extentFromOlLayers(levelLayers));
 
 // configure interactions
@@ -187,6 +187,7 @@ document.addEventListener('keyup', (event) => {
         console.log("remove");
         const olLayerToRemove = layerManager.decrementLevel();
         if (olLayerToRemove) {
+            console.log(olLayerToRemove);
             map.removeLayer(olLayerToRemove);
         }
         break;
@@ -214,6 +215,9 @@ document.addEventListener('keyup', (event) => {
             currentLayers.insertAt(0, stamenBgLayer);
             currentLayers.push(stamenLabelLayer);
         }
+        break;
+    case 'c': 
+        layerManager.toggleCategory();
         break;
     default:
         break;

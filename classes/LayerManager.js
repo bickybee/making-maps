@@ -7,8 +7,19 @@ export default class LayerManager {
         
         const parser = new LayerParser(pathToConfig);
         this.categories = parser.parse();
+        for (let i = 0; i < this.categories.length; i++) {
+            let offset = 0;
+            if (i > 0) {
+                offset = this.categories[i - 1].getLayers().length;
+            }
+            this.categories[i].setZIndices(offset);
+        }
         this.index = this.categories.length - 1; // current category
 
+    }
+
+    toggleCategory() {
+        this.index = (this.index + 1) % (this.categories.length);
     }
 
     getLayer(category, level){
@@ -21,9 +32,17 @@ export default class LayerManager {
 
     getOlLayers() {
         const olLayers = []
-        console.log(this.categories);
         this.categories.forEach((category) => {
             const categoryLayers = category.getOlLayers();
+            olLayers.push(...categoryLayers);
+        })
+        return olLayers;
+    }
+
+    getCurrentOlLayers() {
+        const olLayers = []
+        this.categories.forEach((category) => {
+            const categoryLayers = category.getCurrentOlLayers();
             olLayers.push(...categoryLayers);
         })
         return olLayers;

@@ -4,7 +4,7 @@ export default class LayerCategory {
         this.name = name;
         this.layers = layers;
         this.maxLevelIndex = layers.length - 1;
-        this.currentIndex = this.maxLevelIndex;
+        this.currentIndex = 0;
     }
 
     getCurrentIndex() {
@@ -28,6 +28,15 @@ export default class LayerCategory {
         this.layers.forEach(layer => {
             olLayers.push(layer.getOlLayer());
         });
+        return olLayers;
+    }
+
+    // visible ones
+    getCurrentOlLayers() {
+        const olLayers = []
+        for (let i = 0; i <= this.currentIndex; i++) {
+            olLayers.push(this.layers[i].getOlLayer());
+        }
         return olLayers;
     }
 
@@ -65,6 +74,14 @@ export default class LayerCategory {
         for (let i = 0; i <= this.currentIndex; i++) {
             this.layers[i].addStamp(stamp);
         }
+    }
+
+    setZIndices(offset) {
+        this.layers.forEach((layer) => {
+            // lowest level should have highest z-index
+            const zIndex = offset + this.layers.length - 1 - layer.getLevel();
+            layer.setZIndex(zIndex);
+        })
     }
 
 }

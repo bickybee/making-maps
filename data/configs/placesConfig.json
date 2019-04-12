@@ -1,0 +1,106 @@
+{
+    "name": "places",
+    "hierarchy": {
+        "type": "manual",
+        "definition": {
+            "layers": [
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "city"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "town"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "village"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "hamlet"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "suburb"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                },
+                {
+                    "properties": [
+                        {
+                            "key": "place",
+                            "value": "neighbourhood"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

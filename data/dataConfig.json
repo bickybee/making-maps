@@ -1,12 +1,14 @@
 {
     "categories": [
         {
-            "dataFileName": "toronto.json",
+            "fileType": "topojson",
+            "dataFileName": "ontarioTopo.json",
             "configFileName": "torontoConfig.json"
         },
         {
-            "dataFileName": "green.json",
-            "configFileName": "greenConfigSize.json"
+            "fileType": "geojson",
+            "dataFileName": "placeNodes.json",
+            "configFileName": "placesConfig.json"
         }
     ]
 }

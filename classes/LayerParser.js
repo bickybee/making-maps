@@ -1,7 +1,11 @@
 import LayerCategory from './LayerCategory.js'
 import Layer from './Layer.js';
 import GeoJSON from 'ol/format/GeoJSON';
-import {Stroke, Fill, Style} from 'ol/style.js';
+import TopoJSON from 'ol/format/TopoJSON';
+import {Stroke, Fill, Style, Circle, Text} from 'ol/style.js';
+
+const FILETYPE_TOPOJSON = 'topojson';
+const FILETYPE_GEOJSON = 'geojson';
 
 const TYPE_MANUAL = 'manual';
 const TYPE_AREA = 'area';
@@ -19,24 +23,32 @@ const areaGeoms = [
 export default class LayerParser {
 
     parseManualStyle(styleObj) {
-        const olStyle = new Style({
-            'stroke': new Stroke({
+        if (styleObj.stroke) {
+            const olStyle = new Style();
+            olStyle.setStroke(new Stroke({
                 'color': styleObj.stroke.color,
                 'width': styleObj.stroke.width
-            })
-        });
-        return olStyle;
+            }));
+            return olStyle;
+        } else {
+            const styleFunc = (feature, resolution) => {
+                return new Style({
+                    'text': new Text({
+                        'text': feature.get('name')
+                    })
+                });
+            }
+            return styleFunc;
+        }
     };
 
-    parseManualHierarchy(name, categoryIndex, data, config) {
-        console.log(config);
-        const hierarchy = config.hierarchy.definition.layers;
+    parseManualHierarchy(name, categoryIndex, features, hierarchy) {
+        const layerHierarchy = hierarchy.layers;
         const layers = [];
-        const features = new GeoJSON().readFeatures(data, {featureProjection: 'EPSG:3857'});
         console.log("checking features");
 
         features.forEach((feature) => {
-            const level = hierarchy.findIndex(layer => {
+            const level = layerHierarchy.findIndex(layer => {
                 return layer.properties.find((prop) => {
                     if (feature.getKeys().includes(prop.key)) {
                         return feature.getProperties()[prop.key] === prop.value;
@@ -52,7 +64,7 @@ export default class LayerParser {
             // add to layer at level!
             // create layer if not defined yet
             if (!layers[level]) {
-                const style = this.parseManualStyle(hierarchy[level].style);
+                const style = this.parseManualStyle(layerHierarchy[level].style);
                 layers[level] = new Layer(categoryIndex, level, style);
             }
             layers[level].addFeature(feature);
@@ -157,16 +169,15 @@ export default class LayerParser {
     }
 
 
-    parseAreaHierarchy(name, categoryIndex, data, config) {
+    parseAreaHierarchy(name, categoryIndex, features, hierarchy) {
         let layers = [];
-        const divisions = config.hierarchy.definition.divisions;
+        const divisions = hierarchy.divisions;
         // initialize layers and styles
         for (let i = 0; i < divisions; i++) {
             const style = this.styleAtFraction(1- (i / divisions));
             layers[i] = new Layer(categoryIndex, i, style);
         }
         const featureAreas = [];
-        const features = new GeoJSON().readFeatures(data, {featureProjection: 'EPSG:3857'});
         // get sizes of all features
         features.forEach((feature) => {
             const geometry = feature.getGeometry();
@@ -198,16 +209,23 @@ export default class LayerParser {
         const data = require('../data/geojson/' + category.dataFileName);
         const config = require('../data/configs/' + category.configFileName);
 
+        let features = {}
+        if (category.fileType === FILETYPE_GEOJSON) {
+            features = new GeoJSON().readFeatures(data, {featureProjection: 'EPSG:3857'});
+        } else if (category.fileType === FILETYPE_TOPOJSON) {
+            features = new TopoJSON().readFeatures(data, {featureProjection: 'EPSG:3857'});
+        } 
+
         const name = config.name;
         const hierarchyType = config.hierarchy.type;
+        const hierarchy = config.hierarchy.definition;
 
         switch (hierarchyType) {
         case TYPE_MANUAL:
-            return this.parseManualHierarchy(name, index, data, config);
+            return this.parseManualHierarchy(name, index, features, hierarchy);
             break;
         case TYPE_AREA:
-            console.log("parsing");
-            return this.parseAreaHierarchy(name, index, data, config);
+            return this.parseAreaHierarchy(name, index, features, hierarchy);
             break;
         default:
             break;

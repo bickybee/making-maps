@@ -9,7 +9,8 @@
     "ol": ">=5.0.0-beta.13 <5.0.0-c",
     "ol-ext": "^3.1.2",
     "ol-hashed": ">=2.0.0-beta.1 < 2.0.0-c",
-    "ol-mapbox-style": ">=3.0.0-beta.4 <3.0.0-c"
+    "ol-mapbox-style": ">=3.0.0-beta.4 <3.0.0-c",
+    "topojson-server": "^3.0.0"
   },
   "devDependencies": {
     "@types/openlayers": "^4.6.16",

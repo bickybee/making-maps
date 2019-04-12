@@ -8,6 +8,10 @@
                         {
                             "key": "highway",
                             "value": "motorway"
+                        },
+                        {
+                            "key": "highway",
+                            "value": "primary"
                         }
                     ],
                     "style": {
@@ -22,6 +26,10 @@
                         {
                             "key": "highway",
                             "value": "secondary"
+                        },
+                        {
+                            "key": "highway",
+                            "value": "trunk"
                         }
                     ],
                     "style": {
@@ -54,6 +62,10 @@
                         {
                             "key": "highway",
                             "value": "living_street"
+                        },
+                        {
+                            "key": "highway",
+                            "value": "unclassified"
                         }
                     ],
                     "style": {

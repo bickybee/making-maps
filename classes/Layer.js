@@ -16,6 +16,10 @@ export default class Layer {
         });
     }
 
+    getLevel() {
+        return this.level;
+    }
+
     getOlLayer() {
         return this.olLayer;
     }
@@ -44,5 +48,9 @@ export default class Layer {
 
     hasStamps() {
         return this.stamps.length > 0;
+    }
+
+    setZIndex(zIndex) {
+        this.olLayer.setZIndex(zIndex);
     }
 }
