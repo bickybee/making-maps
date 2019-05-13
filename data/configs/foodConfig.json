@@ -1,0 +1,25 @@
+{   "name": "food",
+    "hierarchy": {
+        "type": "manual",
+        "definition": {
+            "layers": [
+                {
+                    "properties": [
+                        {
+                            "key": "amenity",
+                            "value": "restaurant"
+                        }
+                    ],
+                    "style": {
+                        "image": {
+                            "stroke": {
+                                "color": "#BA3B46",
+                                "width": 3
+                           }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -240,6 +240,7 @@ export default class LayerParser {
     parse() {
         const parsedCategories = [];
         this.categories.forEach((category, i) => {
+            console.log(category.name);
             const parsed = this.parseCategory(category, i);
             console.log(parsed);
             parsedCategories.push(parsed);

@@ -8,9 +8,32 @@
         width: 100%;
         font-family: sans-serif;
       }
+      #map {
+        margin: 0;
+        height: 100%;
+        width: 85%;
+        left: 20%;
+        position: absolute;
+        font-family: sans-serif;
+      }
+      #controls{
+        margin: 0;
+        padding: 20px;
+        height: 100%;
+        width: 20%;
+        float: left;
+        font-family: sans-serif;
+      }
     </style>
     <meta charset="utf-8">
     <title>OpenLayers</title>
+    <div id='controls'>
+      <h4>Controls</h4><br>
+      <form action="">
+        <input type="radio" name="mode" value="select" checked="checked"> select<br>
+        <input type="radio" name="mode" value="edit"> edit
+      </form>
+    </div>
     <div id="map"></div>
   </head>
   <body>

@@ -26,6 +26,21 @@
       {
         "type": "Feature",
         "properties": {
+          "name": "University of Toronto",
+          "place": "neighbourhood"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -79.3957,
+            43.6629
+          ]
+        },
+        "id": "node/18058784"
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "@id": "node/18063533",
           "capital": "4",
           "is_in": "Ontario, Canada",

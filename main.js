@@ -8,9 +8,20 @@ import {defaults as defaultInteractions} from 'ol/interaction.js';
 import DragPan from 'ol/interaction/DragPan';
 import {shiftKeyOnly} from 'ol/events/condition';
 import Stamen from 'ol/source/Stamen.js';
+import Select from 'ol/interaction/Select'
+import Translate from 'ol/interaction/Translate'
+import Feature from 'ol/Feature';
+import LineString from 'ol/geom/LineString';
+import GeoJSON from 'ol/format/GeoJSON.js';
 
-import {extentFromOlLayers, createStamp, addOlLayers, removeOlLayers} from './helpers/olHelpers.js';
+import {extentFromOlLayers, extentFromOlGeoms, createStamp, addOlLayers, removeOlLayers} from './helpers/olHelpers.js';
 import LayerManager from './classes/LayerManager';
+import {Stroke, Fill, Style, Text} from 'ol/style.js';
+import SliderCreator from './classes/SliderCreator';
+
+import {getDistance} from 'ol/sphere.js'
+import Circle from 'ol/geom/Circle';
+import GeometryCollection from 'ol/geom/GeometryCollection'
 
 const layerManager = new LayerManager('./dataConfig.json');
 let brushSize = 100;
@@ -34,9 +45,37 @@ const stamenLabelLayer = new TileLayer({
     })
 });
 
+const uiStyleFunc = (feature) => {
+    if (feature.getGeometry().getType() === 'Point') {
+        return new Style({
+            'text': new Text({
+                'text': feature.get('name'),
+                'scale': 1.75,
+                'stroke': new Stroke({
+                    'color': 'white',
+                    'width': 3
+                })
+            })
+        });
+    } else {
+        return new Style({
+            'stroke': new Stroke({
+                'color': 'black',
+                'width': 2
+            }),
+            'fill': new Fill({
+                'color': "#93d076"
+            })
+        });
+    }
+};
+
 const uiSource = new VectorSource();
 const uiLayer = new VectorLayer({
-    'source': uiSource
+    'source': uiSource,
+    'declutter': false,
+    'style': uiStyleFunc,
+    'zIndex': 100
 });
 
 const bgSource = new VectorSource();
@@ -47,7 +86,7 @@ const bgLayer = new VectorLayer({
 // add olLayers in correct order
 
 const olLayers = layerManager.getCurrentOlLayers();
-olLayers.push(stamenLabelLayer);
+//olLayers.push(stamenLabelLayer);
 olLayers.push(uiLayer);
 olLayers.unshift(bgLayer);
 olLayers.unshift(stamenBgLayer);
@@ -69,6 +108,29 @@ const map = new Map({
     })
 });
 
+
+const increment = (olLayerToAdd) => {
+    if (olLayerToAdd) {
+        map.addLayer(olLayerToAdd);
+    }
+};
+
+const decrement = (olLayerToRemove) => {
+    if (olLayerToRemove) {
+        map.removeLayer(olLayerToRemove);
+    }
+}
+
+const sliderCreator = new SliderCreator();
+const sliders = sliderCreator.createCategorySliders(layerManager.categories, increment, decrement);
+console.log(sliders);
+const controls = document.getElementById("controls");
+sliders.forEach(slider => {
+    controls.appendChild(slider);
+})
+
+
+
 // configure map
 
 const levelLayers = layerManager.getCurrentOlLayers();
@@ -82,8 +144,10 @@ map.addInteraction(new DragPan({
     }
 }));
 
-// const selectInteraction = new Select();
-// map.addInteraction(selectInteraction);
+const selectInteraction = new Select();
+//map.addInteraction(selectInteraction);
+const translateInteraction = new Translate({"source": uiSource});
+map.addInteraction(translateInteraction);
 
 // add pre/postcompose methods to layers (these reference map so they must be done here)
 
@@ -152,6 +216,8 @@ bgLayer.on('postcompose', function(event) {
 
 /* map interaction */
 
+let myCircles = [];
+
 // move brush
 map.on('pointermove', (olEvent) => {
     mousePos.center = map.getPixelFromCoordinate(olEvent.coordinate);
@@ -161,15 +227,87 @@ map.on('pointermove', (olEvent) => {
 // create stamps
 map.on('pointerdrag', (olEvent) => {
     if (!panning) {
-        layerManager.addStamp(createStamp(olEvent, brushSize, map));
+
+        const mouseCoord = olEvent.coordinate;
+        const mousePixel = map.getPixelFromCoordinate(mouseCoord);
+        const perimeterPixel = [mousePixel[0] + brushSize, mousePixel[1]];
+        const perimeterCoord = map.getCoordinateFromPixel(perimeterPixel);
+        const line = new LineString([mouseCoord, perimeterCoord]);
+        const radius = line.getLength();
+
+        myCircles.push(new Circle(mouseCoord, radius));
+        //layerManager.addStamp(createStamp(olEvent, brushSize, map));
     }
 });
 
 // create stamps
 map.on('pointerdown', (olEvent) => {
     if (!panning) {
-        layerManager.addStamp(createStamp(olEvent, brushSize, map));
+
+
+        const mouseCoord = olEvent.coordinate;
+        const mousePixel = map.getPixelFromCoordinate(mouseCoord);
+        const perimeterPixel = [mousePixel[0] + brushSize, mousePixel[1]];
+        const perimeterCoord = map.getCoordinateFromPixel(perimeterPixel);
+        const line = new LineString([mouseCoord, perimeterCoord]);
+        const radius = line.getLength();
+
+        myCircles.push(new Circle(mouseCoord, radius));
+
+//        layerManager.addStamp(createStamp(olEvent, brushSize, map));
     }
+});
+const format = new GeoJSON();
+
+map.on('pointerup', (olEvent) => {
+
+    const circleCollection = new GeometryCollection(myCircles);
+
+    const strokeExtent = circleCollection.getExtent();
+    const currentSources = layerManager.getCurrentOlLayers().map(layer => layer.getSource());
+    const hits = [];
+    currentSources.forEach(source => {
+        const candidates = [];
+        source.forEachFeatureInExtent(strokeExtent, (feature) => {
+            candidates.push(feature);
+        });
+
+         const circleFeature = new Feature({
+             "geometry": circleCollection
+         });
+         source.addFeature(circleFeature);
+        candidates.forEach((candidate) => {
+            source.forEachFeatureIntersectingExtent(candidate.getGeometry().getExtent(), (feature) => {
+                if (feature === circleFeature) {
+                    hits.push(candidate);
+                }
+            })
+        })
+
+        // const turfCircle = turf.circle(myCircle.getCenter(), myCircle.getRadius());
+        // console.log(turfCircle);
+        // const tc = format.readFeature(turfCircle);
+        // source.addFeature(tc);
+        // candidates.forEach((candidate) => {
+        //     const turfFeature = format.writeFeatureObject(candidate);
+        //     console.log(turfFeature);
+        //     if (turf.booleanContains(turfCircle, turfFeature)) {
+        //         hits.push(candidate);
+        //     }
+        // })
+
+        source.removeFeature(circleFeature);
+    });
+    const selectedFeatures = selectInteraction.getFeatures();
+    console.log(hits.length);
+    hits.forEach(hit => {
+        const simpleGeom = hit.getGeometry().simplify(5);
+        hit.setGeometry(simpleGeom);
+        uiLayer.getSource().addFeature(hit);
+    });
+
+    myCircles = [];
+
 });
 
 document.addEventListener('keydown', (event) => {

@@ -10,6 +10,15 @@ export const extentFromOlLayers = (layers) => {
     return totalExtent;
 };
 
+export const extentFromOlGeoms = (geoms) => {
+    const totalExtent = createEmptyExtent();
+    geoms.forEach((geom) => {
+        const extent = geom.getExtent();
+        extendExtent(totalExtent, geom);
+    });
+    return totalExtent;
+};
+
 export const removeOlLayers = (layers, map) => {
     layers.forEach(layer => {
         map.removeLayer(layer);

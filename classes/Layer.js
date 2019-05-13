@@ -11,8 +11,7 @@ export default class Layer {
             category: this.category,
             level: this.level,
             source: new VectorSource(),
-            style: style,
-            declutter: true
+            style: style
         });
     }
 
